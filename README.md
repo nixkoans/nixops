@@ -143,3 +143,6 @@ Make sure we create the `/tmp/current-load` directory too.
 mkdir /tmp/current-load
 ```
 
+## NixOS on linode
+
+[NixOS on linode](linode.md)
