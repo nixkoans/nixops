@@ -145,4 +145,6 @@ mkdir /tmp/current-load
 
 ## NixOS on linode
 
+Setting up NixOS on linode and automating deploying with NixOps
+
 [NixOS on linode](linode.md)
