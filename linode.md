@@ -8,19 +8,23 @@ Implementing with GPT, BIOS, Grub2 boot loader in linode's KVM environment, dire
 gdisk /dev/sda
 ```
 
-Here's what I created:
+Here's the partitions I created:
 
+```
 Number  Start (sector)    End (sector)  Size       Code  Name
    1            2048            4095   1024.0 KiB  EF02  BIOS boot partition
    2            4096         1028095   500.0 MiB   8300  Linux filesystem
    3         1028096         3125247   1024.0 MiB  8200  Linux swap
    4         3125248        50331614   22.5 GiB    8300  Linux filesystem
+```
+
+After creating the partitions with gdisk, let's format them:
 
 ```
 mkfs.ext4 -L nixos /dev/sda4
 mkfs.ext4 -L boot /dev/sda2
 mkswap -L swap /dev/sda3
-swapon /dev/sda3
+swapon /dev/sda3  # switch on the swap partition so nixos-install doesn't fail with out of memory error
 ```
 
 ## Boot into finnix rescue disk on linode
@@ -30,12 +34,13 @@ mount /dev/sda4 /mnt
 mkdir -p /mnt/boot
 mount /dev/sda2 /mnt/boot
 swapon /dev/sda3
-adduser nix
 ```
 
 ## Bootstrap nix installers
 
 ```
+adduser nix
+
 groupadd -r nixbld # we need the Nix build users
 for n in $(seq 1 10); do useradd -c "Nix build user $n" \
 -d /var/empty -g nixbld -G nixbld -M -N -r -s "$(which nologin)" \
